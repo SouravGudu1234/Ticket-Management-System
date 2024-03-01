@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tickets Listing for Agents</title>
+</head>
+<body>
+    <h1>Tickets Listing for Agents</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+            <tr>
+                <td>{{ ticket.title }}</td>
+                <td>{{ ticket.description }}</td>
+                <td>{{ ticket.status }}</td>
+                <td>
+                    <!-- Form to update ticket status via AJAX -->
+                    <form class="status-form">
+                        <input type="hidden" name="ticket_id" value="{{ ticket.id }}">
+                        <select name="status">
+                            <option value="Open">Open</option>
+                            <option value="Closed">Closed</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                        <button type="submit">Update Status</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Include jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // AJAX request to update ticket status
+            $('.status-form').submit(function(event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/update_ticket_status/',  // URL to update ticket status
+                    data: formData,
+                    success: function(response) {
+                        alert('Ticket status updated successfully!');
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        alert('Error updating ticket status!');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

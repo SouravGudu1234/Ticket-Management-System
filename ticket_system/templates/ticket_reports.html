@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Reports</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        /* Custom CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="reportForm" method="post">
+            {% csrf_token %}
+            <input type="date" name="start_date" id="start_date" required>
+            <input type="date" name="end_date" id="end_date" required>
+            <select name="status" id="status">
+                <option value="">Select Status</option>
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+                <option value="Pending">Pending</option>
+            </select>
+            <select name="priority" id="priority">
+                <option value="">Select Priority</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Generate Report</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Block past dates
+            var today = new Date().toISOString().split('T')[0];
+            $('#start_date').attr('min', today);
+            $('#end_date').attr('min', today);
+
+            // Ensure end date is greater than start date
+            $('#start_date').change(function() {
+                $('#end_date').attr('min', $(this).val());
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Generation Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Custom CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        /* Hide the success message initially */
+        .success-message {
+            display: none;
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <div class="form-group">
+
+            </div>
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+        <!-- Success message container -->
+        <div class="success-message" id="success-message">
+            Successful submission message added here.
+        </div>
+    </div>
+
+    <!-- jQuery script for AJAX request -->
+    <script>
+        $(document).ready(function() {
+            // AJAX request to fetch mobile based on selected user
+            $('#id_user').change(function() {
+                var user = $(this).val();
+                $.ajax({
+                    url: "{% url 'get_mobile' %}",  // This will be processed by Django template engine
+                    data: {'user': user},
+                    dataType: 'json',
+                    success: function(data) {
+                        if ('mobile' in data) {
+                            $('#id_mobile').val(data.mobile);
+                        } else {
+                            console.error('Mobile number not found');
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.error('Error:', xhr.responseText);
+                    }
+                });
+            });
+
+            // Show success message on form submission
+            $('form').submit(function() {
+                $('#success-message').show();
+            });
+        });
+    </script>
+</body>
+</html>
